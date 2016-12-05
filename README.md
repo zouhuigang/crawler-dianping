@@ -19,4 +19,12 @@
     go build  mainex/test/g-dianping.go
 
     go run  mainex/test/g-dianping.go
+	
+	#测试数据库连接
+    go run mainex/test/conn-test.go
+
+
+### 定时运行抓取数据代码
+
+    go run mainex/server/g-jianshu.go
 

@@ -1,18 +1,13 @@
-/*
-SELECT page,count(goodsid) FROM `goods_auto_2` where 1=1 GROUP BY page;
-
-SELECT * FROM `goods_auto_2` where page=0;
-*/
 package main
 
 import (
 	"../lib/change"
 	"../lib/public"
+	"../lib/taskqueue"
 	"../structPack"
+	"compress/gzip"
 	. "db"
 	"encoding/json"
-	//"../lib/taskqueue"
-	"compress/gzip"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/go-ini/ini"
@@ -26,10 +21,11 @@ import (
 )
 
 var cfg *ini.File
+var bloom *bloomfilter.BloomFilter
 
 func init() {
 	cfg, _ = ini.Load("config/CrawlerRule-jianshu.ini")
-
+	bloom = bloomfilter.NewBloomFilter(1000000, 8192)
 }
 
 func main() {
@@ -37,10 +33,10 @@ func main() {
 	solid := cfg.Section("CrawlerRule").Key("Solid").MustInt()
 	fmt.Println(task, solid)
 
-	//taskqueue.Task.NewTask(task)
-	//taskqueue.Task.Soldiers(solid, listFunction)
+	taskqueue.Task.NewTask(task)
+	taskqueue.Task.Soldiers(solid, listFunction)
 
-	listUrl(5)
+	//listUrl(5)
 }
 func listFunction(args ...interface{}) {
 	fmt.Println("list done", args[0], args[1])
@@ -62,6 +58,8 @@ func listFunction(args ...interface{}) {
 
 //读取列表信息
 func listUrl(page int) {
+	startPage := cfg.Section("CrawlerRule").Key("StartPage").MustInt(0)
+	page = page + startPage
 	url := cfg.Section("CrawlerRule").Key("Url").Value()
 	url = fmt.Sprintf(url, page)
 
@@ -163,6 +161,13 @@ func ViewInfo(Url string) error {
 	} else {
 		ViewUrl = Url
 	}
+	if bloom.Check([]byte(ViewUrl)) {
+		fmt.Println("该链接已爬取过" + ViewUrl)
+		return nil
+	} else {
+		bloom.Add([]byte(ViewUrl))
+	}
+
 	doc, err := goquery.NewDocument(ViewUrl)
 	if err != nil {
 		log.Fatal(err)
@@ -179,6 +184,7 @@ func ViewInfo(Url string) error {
 	tmpArticle.Title = doc.Find(rule["Title"]).Text()
 	tmpArticle.Is_auto = 1
 	tmpArticle.Is_open = 1
+	tmpArticle.Cateid = 5
 	tmpArticle.Url = ViewUrl
 	//save([]byte(tmpArticle.Content), tmpArticle.Title+".html")
 	//封面图
@@ -205,7 +211,7 @@ func ViewInfo(Url string) error {
 
 }
 
-func bloomfilterUrl(url string) bool {
+func bloomfilterUrltest(url string) bool {
 	set := bloomfilter.NewBloomFilter(1000000, 8192) // elements, false positive rate
 	bloomTF1 := set.Check([]byte(url))               // => true
 

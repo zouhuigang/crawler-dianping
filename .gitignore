@@ -1,3 +1,5 @@
 github.com/**
 golang.org/**
 gopkg.in/**
+vendor/**
+!vendor/manifest

@@ -59,6 +59,46 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/go-xorm/builder",
+			"repository": "https://github.com/go-xorm/builder",
+			"vcs": "git",
+			"revision": "cd42e8337f3031e737c3f415b6354793cf30f1c9",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/go-xorm/core",
+			"repository": "https://github.com/go-xorm/core",
+			"vcs": "git",
+			"revision": "2ec3936f8a8a3fb6397c6c10185acffa87488534",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/go-xorm/xorm",
+			"repository": "https://github.com/go-xorm/xorm",
+			"vcs": "git",
+			"revision": "2597ab2401fb09c187be4c553c026bcacda93e60",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/lib/pq",
+			"repository": "https://github.com/lib/pq",
+			"vcs": "git",
+			"revision": "4a82388ebc5138c8289fe9bc602cb0b3e32cd617",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/mattn/go-sqlite3",
+			"repository": "https://github.com/mattn/go-sqlite3",
+			"vcs": "git",
+			"revision": "8ecd77c707d698b39fbcf76e4e8d08f284c8307f",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/polaris1119/config",
 			"repository": "https://github.com/polaris1119/config",
 			"vcs": "git",
