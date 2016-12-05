@@ -1,0 +1,164 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/PuerkitoBio/goquery",
+			"repository": "https://github.com/PuerkitoBio/goquery",
+			"vcs": "git",
+			"revision": "152b1a2c8f5d0340f658bb656032a39b94e52958",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/Unknwon/goconfig",
+			"repository": "https://github.com/Unknwon/goconfig",
+			"vcs": "",
+			"revision": "87a46d97951ee1ea20ed3b24c25646a79e87ba5d",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/andybalholm/cascadia",
+			"repository": "https://github.com/andybalholm/cascadia",
+			"vcs": "git",
+			"revision": "65919c611220063037b1db8eb334acaf17a6d8ea",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/garyburd/redigo/internal",
+			"repository": "https://github.com/garyburd/redigo",
+			"vcs": "git",
+			"revision": "d7de57ceb51b029d5c5a61e26587f672e2834178",
+			"branch": "master",
+			"path": "internal",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/garyburd/redigo/redis",
+			"repository": "https://github.com/garyburd/redigo",
+			"vcs": "git",
+			"revision": "d7de57ceb51b029d5c5a61e26587f672e2834178",
+			"branch": "master",
+			"path": "/redis",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/go-ini/ini",
+			"repository": "https://github.com/go-ini/ini",
+			"vcs": "git",
+			"revision": "2ba15ac2dc9cdf88c110ec2dc0ced7fa45f5678c",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/go-sql-driver/mysql",
+			"repository": "https://github.com/go-sql-driver/mysql",
+			"vcs": "git",
+			"revision": "4ac31a97ccff97de60ba3c630bfb4733c1bb6d0e",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/polaris1119/config",
+			"repository": "https://github.com/polaris1119/config",
+			"vcs": "git",
+			"revision": "e4f8b7e9e2efddefc0979062d31a2f0514c1132c",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/siddontang/go/log",
+			"repository": "https://github.com/siddontang/go",
+			"vcs": "git",
+			"revision": "1e9ce2a5ac4092fdf61e293634e40bfb49595105",
+			"branch": "master",
+			"path": "/log",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/zouhuigang/bloomfilter",
+			"repository": "https://github.com/zouhuigang/bloomfilter",
+			"vcs": "git",
+			"revision": "6de0614b11a84f66f996bf0ff767070be15efd7f",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/zouhuigang/config",
+			"repository": "https://github.com/zouhuigang/config",
+			"vcs": "",
+			"revision": "5233fce10fbec0762ef0bd0e259eb6b830d57f52",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/zouhuigang/sessions",
+			"repository": "https://github.com/zouhuigang/sessions",
+			"vcs": "",
+			"revision": "ca9ada44574153444b00d3fd9c8559e4cc95f896",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/zouhuigang/uuid",
+			"repository": "https://github.com/zouhuigang/uuid",
+			"vcs": "",
+			"revision": "7bbe408d339787c56ec15568c947c0959db1b275",
+			"branch": "master"
+		},
+		{
+			"importpath": "golang.org/x/net/context",
+			"repository": "https://github.com/golang/net",
+			"vcs": "",
+			"revision": "024ed629fd292398cfd43c9678a5bf004f7defdc",
+			"branch": "master",
+			"path": "/context"
+		},
+		{
+			"importpath": "golang.org/x/net/html",
+			"repository": "https://github.com/golang/net",
+			"vcs": "",
+			"revision": "1aafd77e1e7f6849ad16a7bdeb65e3589a10b2bb",
+			"branch": "master",
+			"path": "/html"
+		},
+		{
+			"importpath": "golang.org/x/net/http2/hpack",
+			"repository": "https://github.com/golang/net",
+			"vcs": "",
+			"revision": "8b4af36cd21a1f85a7484b49feb7c79363106d8e",
+			"branch": "master",
+			"path": "/http2/hpack"
+		},
+		{
+			"importpath": "golang.org/x/net/idna",
+			"repository": "https://github.com/golang/net",
+			"vcs": "",
+			"revision": "8b4af36cd21a1f85a7484b49feb7c79363106d8e",
+			"branch": "master",
+			"path": "/idna"
+		},
+		{
+			"importpath": "golang.org/x/net/lex/httplex",
+			"repository": "https://github.com/golang/net",
+			"vcs": "",
+			"revision": "8b4af36cd21a1f85a7484b49feb7c79363106d8e",
+			"branch": "master",
+			"path": "/lex/httplex"
+		},
+		{
+			"importpath": "golang.org/x/net/netutil",
+			"repository": "https://github.com/golang/net",
+			"vcs": "",
+			"revision": "313cf39d4ac368181bce6960ac9be9e7cee67e68",
+			"branch": "master",
+			"path": "/netutil"
+		},
+		{
+			"importpath": "golang.org/x/net/websocket",
+			"repository": "https://github.com/golang/net",
+			"vcs": "",
+			"revision": "024ed629fd292398cfd43c9678a5bf004f7defdc",
+			"branch": "master",
+			"path": "/websocket"
+		}
+	]
+}
