@@ -46,7 +46,7 @@ func autocrawl(needAll bool, crawlConfFile string, whichSite string) {
 	// 定时增量
 	i := 0
 	c := cron.New()
-	spec := "* * */1 * * ?"
+	spec := "*/5 * * * * ?"
 	c.AddFunc(spec, func() {
 		i++
 		for k, v := range rule {

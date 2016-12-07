@@ -27,7 +27,7 @@ func Write() {
 	siteInfo := &structPack.SiteInfo{}
 	siteInfo.Name = "简书"
 	siteInfo.Url = "www.jianshu.com"
-	siteInfo.CateId = 5
+	siteInfo.CateId = 6
 
 	//头部请求信息
 	headerSet := &structPack.HeaderSet{}
@@ -50,8 +50,8 @@ func Write() {
 		"%3D%3D--35cd60d9eafde576e18e29f19dbc2533d07cb747; _gat=1"
 	//抓取规则
 	crawlerRule := &structPack.CrawlerRule{}
-	crawlerRule.Url = "http://www.jianshu.com/collections/16/notes?order_by=added_at&page=%d"
-	crawlerRule.StartPage = 121
+	crawlerRule.Url = "http://www.jianshu.com/collections/4314/notes?order_by=added_at&page=%d"
+	crawlerRule.StartPage = 0
 	crawlerRule.Task = 10
 	crawlerRule.Solid = 5
 	crawlerRule.ListP = "#list-container ul.article-list li"
@@ -71,7 +71,7 @@ func Write() {
 	mainConfig.CrawlerRule = crawlerRule
 	mainConfig.CrawlerContentToDb = crawlerContentToDb
 	ini.ReflectFrom(cfg, mainConfig)
-	err := cfg.SaveTo("config/CrawlerRule-jianshu-5.ini")
+	err := cfg.SaveTo("config/CrawlerRule-jianshu-6.ini")
 	fmt.Println(err)
 	//cfg.SaveToIndent("my.ini", "\t")
 }

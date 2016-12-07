@@ -24,7 +24,11 @@
     go run mainex/test/conn-test.go
 
 
+###生成ini爬虫规则
+
+    go run mainex/server/ini-xxx.go
+
 ### 定时运行抓取数据代码
 
-    go run mainex/server/g-jianshu.go
+    go run mainex/g.go
 

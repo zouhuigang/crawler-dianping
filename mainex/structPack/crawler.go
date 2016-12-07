@@ -23,8 +23,9 @@ type CrawlerContentToDb struct {
 }
 
 type SiteInfo struct {
-	Name string
-	Url  string
+	Name   string
+	Url    string
+	CateId int //分类的id，写死
 }
 
 type HeaderSet struct {

@@ -62,7 +62,7 @@ func gmain(crawlerRuleConf string) {
 	//listUrl(5)
 }
 func listFunction(args ...interface{}) {
-	fmt.Println("list done", args[0], args[1])
+	//fmt.Println("list done", args[0], args[1])
 	var page int = 0
 	switch v := args[0].(type) {
 	case int:
@@ -207,7 +207,7 @@ func ViewInfo(Url string, pages int) error {
 	tmpArticle.Title = doc.Find(rule["Title"]).Text()
 	tmpArticle.Is_auto = 1
 	tmpArticle.Is_open = 1
-	tmpArticle.Cateid = 5
+	tmpArticle.Cateid = cfg.Section("SiteInfo").Key("CateId").MustInt(0)
 	tmpArticle.Is_auto_page = pages
 	tmpArticle.Is_auto_source = cfg.Section("SiteInfo").Key("Name").Value()
 	tmpArticle.Url = ViewUrl
