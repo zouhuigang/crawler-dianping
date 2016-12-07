@@ -107,6 +107,14 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/robfig/cron",
+			"repository": "https://github.com/robfig/cron",
+			"vcs": "git",
+			"revision": "9585fd555638e77bba25f25db5c44b41f264aeb7",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/siddontang/go/log",
 			"repository": "https://github.com/siddontang/go",
 			"vcs": "git",

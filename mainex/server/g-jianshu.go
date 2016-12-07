@@ -1,10 +1,6 @@
-package main
+package server
 
 import (
-	"../lib/change"
-	"../lib/public"
-	"../lib/taskqueue"
-	"../structPack"
 	"compress/gzip"
 	. "db"
 	"encoding/json"
@@ -14,24 +10,51 @@ import (
 	"github.com/zouhuigang/bloomfilter"
 	"io/ioutil"
 	"log"
+	"mainex/lib/change"
+	"mainex/lib/public"
+	"mainex/lib/taskqueue"
+	"mainex/structPack"
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 )
 
 var cfg *ini.File
 var bloom *bloomfilter.BloomFilter
 
-func init() {
-	cfg, _ = ini.Load("config/CrawlerRule-jianshu.ini")
+//func init() {
+//	cfg, _ = ini.Load("config/CrawlerRule-jianshu.ini")
+//	bloom = bloomfilter.NewBloomFilter(1000000, 8192)
+//}
+
+func Ginit(crawlerRuleConf string) {
+	ini.DefaultHeader = true
+	cfg, _ = ini.Load(crawlerRuleConf)
 	bloom = bloomfilter.NewBloomFilter(1000000, 8192)
+
+	log.Println("定时任务正在执行")
+
+	gmain(crawlerRuleConf)
 }
 
-func main() {
+//修改startpage
+func UpdateStartPage(crawlerRuleConf string, page int) {
+	// 通过Itoa方法转换
+	str1 := strconv.Itoa(page)
+	cfg.Section("CrawlerRule").Key("StartPage").SetValue(str1)
+	cfg.SaveTo(crawlerRuleConf)
+}
+
+func gmain(crawlerRuleConf string) {
 	task := cfg.Section("CrawlerRule").Key("Task").MustInt()
 	solid := cfg.Section("CrawlerRule").Key("Solid").MustInt()
-	fmt.Println(task, solid)
+	startPage := cfg.Section("CrawlerRule").Key("StartPage").MustInt(0)
+	//fmt.Println(task, solid)
+	var upage int = task + startPage
+	//修改
+	defer UpdateStartPage(crawlerRuleConf, upage)
 
 	taskqueue.Task.NewTask(task)
 	taskqueue.Task.Soldiers(solid, listFunction)
@@ -51,7 +74,7 @@ func listFunction(args ...interface{}) {
 		break
 
 	}
-	fmt.Println("正在抓取第", page)
+	//fmt.Println("正在抓取第", page)
 	listUrl(page)
 
 }
@@ -95,7 +118,7 @@ func Parsedocument(html string, page int) {
 	doc.Find(ListP).Each(func(i int, s *goquery.Selection) {
 		ListAUrl, _ := s.Find(ListA).Attr("href")
 		fmt.Println("获取列表成功", ListAUrl)
-		ViewInfo(ListAUrl)
+		ViewInfo(ListAUrl, page)
 	})
 }
 
@@ -153,7 +176,7 @@ func GetByProxy(url_addr, proxy_addr string) (*http.Response, error) {
 }
 
 //解析列表
-func ViewInfo(Url string) error {
+func ViewInfo(Url string, pages int) error {
 	ViewHost := cfg.Section("CrawlerRule").Key("ViewHost").Value()
 	var ViewUrl = ""
 	if ViewHost != "" {
@@ -185,6 +208,8 @@ func ViewInfo(Url string) error {
 	tmpArticle.Is_auto = 1
 	tmpArticle.Is_open = 1
 	tmpArticle.Cateid = 5
+	tmpArticle.Is_auto_page = pages
+	tmpArticle.Is_auto_source = cfg.Section("SiteInfo").Key("Name").Value()
 	tmpArticle.Url = ViewUrl
 	//save([]byte(tmpArticle.Content), tmpArticle.Title+".html")
 	//封面图
