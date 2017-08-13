@@ -107,14 +107,6 @@
 			"notests": true
 		},
 		{
-			"importpath": "github.com/robfig/cron",
-			"repository": "https://github.com/robfig/cron",
-			"vcs": "git",
-			"revision": "9585fd555638e77bba25f25db5c44b41f264aeb7",
-			"branch": "master",
-			"notests": true
-		},
-		{
 			"importpath": "github.com/siddontang/go/log",
 			"repository": "https://github.com/siddontang/go",
 			"vcs": "git",
@@ -207,6 +199,14 @@
 			"revision": "024ed629fd292398cfd43c9678a5bf004f7defdc",
 			"branch": "master",
 			"path": "/websocket"
+		},
+		{
+			"importpath": "gopkg.in/robfig/cron.v2",
+			"repository": "https://gopkg.in/robfig/cron.v2",
+			"vcs": "git",
+			"revision": "be2e0b0deed5a68ffee390b4583a13aff8321535",
+			"branch": "v2",
+			"notests": true
 		}
 	]
 }

@@ -13,6 +13,31 @@
 
 该案例中，只用到了d,e两种算法。abc等几个算法都已实现在函数中。
 
+
+3.定时任务说明(Crontab)
+
+
+	# 文件格式说明
+	#  ——分钟（0 - 59）
+	# |  ——小时（0 - 23）
+	# | |  ——日（1 - 31）
+	# | | |  ——月（1 - 12）
+	# | | | |  ——星期（0 - 7，星期日=0或7）
+	# | | | | |
+	# * * * * * 被执行的命令
+
+golang扩展包使用：
+
+	Field name   | Mandatory? | Allowed values  | Allowed special characters
+	----------   | ---------- | --------------  | --------------------------
+	Seconds      | Yes        | 0-59            | * / , -
+	Minutes      | Yes        | 0-59            | * / , -
+	Hours        | Yes        | 0-23            | * / , -
+	Day of month | Yes        | 1-31            | * / , - ?
+	Month        | Yes        | 1-12 or JAN-DEC | * / , -
+	Day of week  | Yes        | 0-6 or SUN-SAT  | * / , - ?
+
+
 ### 打开本地目录
 
     cd D:\mnt\crawler\src

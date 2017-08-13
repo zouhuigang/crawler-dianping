@@ -31,10 +31,14 @@ var bloom *bloomfilter.BloomFilter
 
 func Ginit(crawlerRuleConf string) {
 	ini.DefaultHeader = true
-	cfg, _ = ini.Load(crawlerRuleConf)
+	cfg, err := ini.Load(crawlerRuleConf)
+	if err != nil {
+		fmt.Println("读取文件失败", crawlerRuleConf)
+		os.Exit(0)
+	}
 	bloom = bloomfilter.NewBloomFilter(1000000, 8192)
 
-	log.Println("定时任务正在执行")
+	log.Println("定时任务正在执行", cfg)
 
 	gmain(crawlerRuleConf)
 }
