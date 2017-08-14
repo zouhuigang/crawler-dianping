@@ -131,6 +131,15 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/zouhuigang/package/zqueue",
+			"repository": "https://github.com/zouhuigang/package",
+			"vcs": "git",
+			"revision": "42411d77b286bc979449045f58004b4722472b10",
+			"branch": "master",
+			"path": "/zqueue",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/zouhuigang/sessions",
 			"repository": "https://github.com/zouhuigang/sessions",
 			"vcs": "",

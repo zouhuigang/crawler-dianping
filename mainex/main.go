@@ -4,12 +4,12 @@ import (
 	"math/rand"
 	//"path/filepath"
 	//"github.com/robfig/cron"
-	cron "gopkg.in/robfig/cron.v2"
-	"log"
-	"mainex/structPack"
-	//"mainex/server"
 	. "db"
 	"fmt"
+	cron "gopkg.in/robfig/cron.v2"
+	"log"
+	"mainex/server"
+	"mainex/structPack"
 	"time"
 )
 
@@ -91,7 +91,7 @@ func doNpcRefresh(id int) bool {
 	//spec := "*/5 * * * * ?"
 	entryID, _ := c.AddFunc(spec, func() {
 		i++
-		go doCrawl(crinfo.Id, i)
+		doCrawl(crinfo.Id, i)
 
 	})
 	setEntryID(id, int(entryID))
@@ -131,7 +131,7 @@ func removeNotNormalRuning() {
 func main() {
 
 	c = cron.New()
-	spec := "*/10 * * * * *"
+	spec := "*/10 * * * * *" //2分钟读取一次数据
 	mainid, _ = c.AddFunc(spec, func() {
 		//每秒检测下数据库配置是否更新了
 		log.Printf("正在读取最新配置.....\n")
@@ -172,13 +172,27 @@ func main() {
 
 }
 
+//得到爬虫具体规则
+func getCrawlRule(cron_id int) ([]*structPack.Crawl_rule, error) {
+	beans := make([]*structPack.Crawl_rule, 0)
+	err := MasterDB.
+		Where("cron_id=?", cron_id).Find(&beans)
+	return beans, err
+}
+
 //开始抓取
 func doCrawl(id int, i int) {
 	crinfo := getNewestInfoById(id)
 	setRefreshStart(id)
-	//server.Ginit("config/" + v)
+
+	//得到爬虫规则
 	if crinfo.Is_showlog == 1 {
 		log.Printf("爬虫[%d-%s]正在第%d次抓取...", id, crinfo.C_name, i)
 	}
+	ruleList, _ := getCrawlRule(id)
+	for _, v := range ruleList {
+		go server.Ginit(v)
+	}
+
 	setRefreshDone(id)
 }

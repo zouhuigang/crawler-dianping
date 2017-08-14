@@ -6,62 +6,48 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/go-ini/ini"
 	"github.com/zouhuigang/bloomfilter"
+	"github.com/zouhuigang/package/zqueue"
 	"io/ioutil"
 	"log"
 	"mainex/lib/change"
 	"mainex/lib/public"
-	"mainex/lib/taskqueue"
 	"mainex/structPack"
 	"net/http"
 	"net/url"
 	"os"
-	"strconv"
 	"strings"
 )
 
-var cfg *ini.File
+var cfg *structPack.Crawl_rule
 var bloom *bloomfilter.BloomFilter
 
-//func init() {
-//	cfg, _ = ini.Load("config/CrawlerRule-jianshu.ini")
-//	bloom = bloomfilter.NewBloomFilter(1000000, 8192)
-//}
-
-func Ginit(crawlerRuleConf string) {
-	ini.DefaultHeader = true
-	cfg, err := ini.Load(crawlerRuleConf)
-	if err != nil {
-		fmt.Println("读取文件失败", crawlerRuleConf)
-		os.Exit(0)
-	}
+func Ginit(rule *structPack.Crawl_rule) {
+	cfg = rule
+	//ini.DefaultHeader = true
 	bloom = bloomfilter.NewBloomFilter(1000000, 8192)
 
 	log.Println("定时任务正在执行", cfg)
 
-	gmain(crawlerRuleConf)
+	gmain()
 }
 
 //修改startpage
-func UpdateStartPage(crawlerRuleConf string, page int) {
+func UpdateStartPage(page int) {
 	// 通过Itoa方法转换
-	str1 := strconv.Itoa(page)
+	/*str1 := strconv.Itoa(page)
 	cfg.Section("CrawlerRule").Key("StartPage").SetValue(str1)
-	cfg.SaveTo(crawlerRuleConf)
+	cfg.SaveTo(crawlerRuleConf)*/
 }
 
-func gmain(crawlerRuleConf string) {
-	task := cfg.Section("CrawlerRule").Key("Task").MustInt()
-	solid := cfg.Section("CrawlerRule").Key("Solid").MustInt()
-	startPage := cfg.Section("CrawlerRule").Key("StartPage").MustInt(0)
-	//fmt.Println(task, solid)
-	var upage int = task + startPage
-	//修改
-	defer UpdateStartPage(crawlerRuleConf, upage)
+func gmain() {
 
-	taskqueue.Task.NewTask(task)
-	taskqueue.Task.Soldiers(solid, listFunction)
+	startPage := 2
+	//fmt.Println(task, solid)
+	var upage int = cfg.Task + startPage
+	//修改
+	defer UpdateStartPage(upage)
+	zqueue.NewTask(cfg.Task, cfg.Solid, listFunction)
 
 	//listUrl(5)
 }
@@ -85,9 +71,9 @@ func listFunction(args ...interface{}) {
 
 //读取列表信息
 func listUrl(page int) {
-	startPage := cfg.Section("CrawlerRule").Key("StartPage").MustInt(0)
+	startPage := cfg.Spage
 	page = page + startPage
-	url := cfg.Section("CrawlerRule").Key("Url").Value()
+	url := cfg.Url
 	url = fmt.Sprintf(url, page)
 
 	html := GetHtml(url)
@@ -117,8 +103,8 @@ func Parsedocument(html string, page int) {
 		fmt.Println("解析文档错误")
 	}
 
-	ListP := cfg.Section("CrawlerRule").Key("ListP").Value()
-	ListA := cfg.Section("CrawlerRule").Key("ListA").Value()
+	ListP := cfg.List_dom
+	ListA := cfg.List_url_dom
 	doc.Find(ListP).Each(func(i int, s *goquery.Selection) {
 		ListAUrl, _ := s.Find(ListA).Attr("href")
 		fmt.Println("获取列表成功", ListAUrl)
@@ -128,9 +114,8 @@ func Parsedocument(html string, page int) {
 
 func GetHtml(url string) []byte {
 	proxy := "http://104.224.15.64:8080/"
-	//url := "http://www.baidu.com/"
 	resp, _ := GetByProxy(url, proxy)
-	//fmt.Println(resp)
+	fmt.Printf("爬虫正在爬取链接[%v],爬取状态:%v\n", url, resp.StatusCode)
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 200 {
@@ -144,11 +129,11 @@ func GetHtml(url string) []byte {
 			bodyByte, _ := ioutil.ReadAll(resp.Body)
 			body = bodyByte
 		}
+		//fmt.Println(string(body))
 		return body
 	}
 	//body, _ := ioutil.ReadAll(resp.Body)
 	return nil
-	//fmt.Println(string(body))
 }
 
 // http get by proxy 模仿ip代理
@@ -162,7 +147,7 @@ func GetByProxy(url_addr, proxy_addr string) (*http.Response, error) {
 	}
 
 	headerSet := new(structPack.HeaderSet)
-	cfg.Section("HeaderSet").MapTo(headerSet)
+	//cfg.HeaderSet
 	map_ := change.Struct.ToMapAddr(headerSet)
 	for k, v := range map_ {
 		if v != "" {
@@ -181,7 +166,7 @@ func GetByProxy(url_addr, proxy_addr string) (*http.Response, error) {
 
 //解析列表
 func ViewInfo(Url string, pages int) error {
-	ViewHost := cfg.Section("CrawlerRule").Key("ViewHost").Value()
+	ViewHost := cfg.Domain
 	var ViewUrl = ""
 	if ViewHost != "" {
 		ViewUrl = ViewHost + Url
@@ -200,20 +185,19 @@ func ViewInfo(Url string, pages int) error {
 		log.Fatal(err)
 	}
 
-	rule := cfg.Section("CrawlerContentToDb").KeysHash()
 	tmpArticle := &structPack.Anote{}
 
 	//解析文章
-	tmpArticle.Content, err = doc.Find(rule["Content"]).Html()
+	tmpArticle.Content, err = doc.Find(cfg.View_content_dom).Html()
 	if err != nil {
 		log.Fatal("文章内容解析失败")
 	}
-	tmpArticle.Title = doc.Find(rule["Title"]).Text()
+	tmpArticle.Title = doc.Find(cfg.View_title_dom).Text()
 	tmpArticle.Is_auto = 1
 	tmpArticle.Is_open = 1
-	tmpArticle.Cateid = cfg.Section("SiteInfo").Key("CateId").MustInt(0)
+	tmpArticle.Cateid = 5
 	tmpArticle.Is_auto_page = pages
-	tmpArticle.Is_auto_source = cfg.Section("SiteInfo").Key("Name").Value()
+	tmpArticle.Is_auto_source = cfg.Name
 	tmpArticle.Url = ViewUrl
 	//save([]byte(tmpArticle.Content), tmpArticle.Title+".html")
 	//封面图

@@ -76,3 +76,19 @@ type Crawl_crontab struct {
 	Is_showlog int
 	Is_open    int
 }
+
+//爬虫Url
+type Crawl_rule struct {
+	Id               int
+	Cron_id          int
+	Domain           string
+	Name             string
+	Url              string
+	Spage            int
+	List_dom         string
+	List_url_dom     string
+	View_title_dom   string
+	View_content_dom string
+	Task             int
+	Solid            int
+}
