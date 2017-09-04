@@ -6,8 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/zouhuigang/bloomfilter"
-	"github.com/zouhuigang/package/zqueue"
 	"io/ioutil"
 	"log"
 	"mainex/lib/change"
@@ -19,54 +17,9 @@ import (
 	"strings"
 )
 
-var cfg *structPack.Crawl_rule
-var bloom *bloomfilter.BloomFilter
+func main() {
 
-func Ginit(rule *structPack.Crawl_rule) {
-	cfg = rule
-	//ini.DefaultHeader = true
-	bloom = bloomfilter.NewBloomFilter(1000000, 8192)
-
-	log.Println("定时任务正在执行", cfg)
-
-	gmain()
-}
-
-//修改startpage
-func UpdateStartPage(page int) {
-	// 通过Itoa方法转换
-	/*str1 := strconv.Itoa(page)
-	cfg.Section("CrawlerRule").Key("StartPage").SetValue(str1)
-	cfg.SaveTo(crawlerRuleConf)*/
-}
-
-func gmain() {
-
-	startPage := 2
-	//fmt.Println(task, solid)
-	var upage int = cfg.Task + startPage
-	//修改
-	defer UpdateStartPage(upage)
-	zqueue.NewTask(cfg.Task, cfg.Solid, listFunction)
-
-	//listUrl(5)
-}
-func listFunction(args ...interface{}) {
-	//fmt.Println("list done", args[0], args[1])
-	var page int = 0
-	switch v := args[0].(type) {
-	case int:
-		//fmt.Println("整型", v)
-		page = v
-		break
-	case string:
-		//fmt.Println("字符串", v)
-		break
-
-	}
-	//fmt.Println("正在抓取第", page)
-	listUrl(page)
-
+	listUrl(2)
 }
 
 //读取列表信息
@@ -107,7 +60,7 @@ func Parsedocument(html string, page int) {
 	ListA := cfg.List_url_dom
 	doc.Find(ListP).Each(func(i int, s *goquery.Selection) {
 		ListAUrl, _ := s.Find(ListA).Attr("href")
-		fmt.Printf("获取到的列表地址为:[%v]\n", ListAUrl)
+		fmt.Println("获取列表成功", ListAUrl)
 		ViewInfo(ListAUrl, page)
 	})
 }
@@ -164,27 +117,14 @@ func GetByProxy(url_addr, proxy_addr string) (*http.Response, error) {
 	return client.Do(request)
 }
 
-//得到完整的网址
-func GetFullUrl(url string, domain string) (bool, string) { //anooc.com
-	if strings.Contains(url, domain) { //含有合法域名的url
-		return true, url
-	} else { //不含有合法域名的url
-		if strings.Contains(url, "http") || strings.Contains(url, "https") {
-			return false, url
-		}
-	}
-
-	return true, domain + url
-
-}
-
 //解析列表
 func ViewInfo(Url string, pages int) error {
 	ViewHost := cfg.Domain
-	is_success, ViewUrl := GetFullUrl(Url, ViewHost)
-	if !is_success {
-		fmt.Printf("检测到非法url[%v]自动跳过..\n", ViewUrl)
-		return nil
+	var ViewUrl = ""
+	if ViewHost != "" {
+		ViewUrl = ViewHost + Url
+	} else {
+		ViewUrl = Url
 	}
 	if bloom.Check([]byte(ViewUrl)) {
 		fmt.Println("该链接已爬取过" + ViewUrl)
@@ -226,29 +166,8 @@ func ViewInfo(Url string, pages int) error {
 	tmpArticle.Newslist_tpl = len(cover)
 
 	//解析文章end
-
-	_, err = MasterDB.Insert(tmpArticle)
-	if err != nil {
-		log.Fatal("插入数据库失败")
-		return nil
-	}
+	fmt.Printf("get content=====%v\n", tmpArticle)
 
 	return nil
 
-}
-
-func bloomfilterUrltest(url string) bool {
-	set := bloomfilter.NewBloomFilter(1000000, 8192) // elements, false positive rate
-	bloomTF1 := set.Check([]byte(url))               // => true
-
-	if bloomTF1 {
-		//fmt.Println("2存在")
-		return true
-	} else {
-		//fmt.Println("2不存在")
-		set.Add([]byte(url))
-		return false
-	}
-
-	return false
 }
